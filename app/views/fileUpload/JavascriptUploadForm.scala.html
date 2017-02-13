@@ -2,8 +2,11 @@
 @(files: Seq[EnvelopeFile], envelopeID: String)(implicit request: Request[_], messages: Messages)
 
 <div class="form-group">
-    <label for="file-input-js" id="file-input-js-label" hidden>@Messages("page.fileUpload.heading")</label>
-        <input id="file-input-js" type="file" name="supporting-docs" onchange="this.form.submit()" accept="application/pdf" style="display: none;">
+    <input type="hidden" id="envelope-id" name="envelope-id" value="@envelopeID">
+</div>
+
+<div class="form-group">
+    <input id="file-input-js" type="file" name="supporting-docs" onchange="this.form.submit()" accept="application/pdf" style="display: none;">
 </div>
 
 @if(files.size == 0){

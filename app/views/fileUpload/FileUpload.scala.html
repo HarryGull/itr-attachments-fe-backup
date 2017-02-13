@@ -6,107 +6,103 @@
 @(files: Seq[EnvelopeFile], envelopeID: String, backUrl:String, fileErrors: Seq[FormError] = Seq())(implicit request: Request[_], messages: Messages)
 
 @sidebar = {
-    <h2 class="heading-small" id="supporting-docs-heading"> @Messages("page.supportingDocuments.SupportingDocuments.heading")</h2>
-    <ul class="list list-bullet">
-        <li id="supporting-docs-one">@Messages("page.supportingDocuments.SupportingDocuments.bullet.one")</li>
-        <li id="supporting-docs-two">@Messages("page.supportingDocuments.SupportingDocuments.bullet.two")</li>
-        <li id="supporting-docs-three">@Messages("page.supportingDocuments.SupportingDocuments.bullet.three")</li>
-        <li id="supporting-docs-four">@Messages("page.supportingDocuments.SupportingDocuments.bullet.four")</li>
-        <li id="supporting-docs-five">@Messages("page.supportingDocuments.SupportingDocuments.bullet.five")</li>
-    </ul>
-    <div class="section--blue-top"></div>
+<h2 class="heading-small" id="supporting-docs-heading"> @Messages("page.supportingDocuments.SupportingDocuments.heading")</h2>
+<ul class="list list-bullet">
+    <li id="supporting-docs-one">@Messages("page.supportingDocuments.SupportingDocuments.bullet.one")</li>
+    <li id="supporting-docs-two">@Messages("page.supportingDocuments.SupportingDocuments.bullet.two")</li>
+    <li id="supporting-docs-three">@Messages("page.supportingDocuments.SupportingDocuments.bullet.three")</li>
+    <li id="supporting-docs-four">@Messages("page.supportingDocuments.SupportingDocuments.bullet.four")</li>
+    <li id="supporting-docs-five">@Messages("page.supportingDocuments.SupportingDocuments.bullet.five")</li>
+</ul>
+<div class="section--blue-top"></div>
 }
 
 
 @main_template(Messages("page.fileUpload.title"), sidebarLinks = Some(sidebar)) {
 
-    <!--TODO: add backlink to backUrl passed to service -->
-     @backButtonWithProgress(backUrl, Messages("common.section.progress.company.details.five"))
+<!--TODO: add backlink to backUrl passed to service -->
+@backButtonWithProgress(backUrl, Messages("common.section.progress.company.details.five"))
+
+<div class="form-group">
+
+    @errorSummaryFileUpload(fileErrors, "file-upload", "upload-button")
+
+    <h1 id="main-heading" class="form-title heading-xlarge">@Messages("page.fileUpload.heading")</h1>
 
     <div class="form-group">
-
-        @errorSummaryFileUpload(fileErrors, "file-upload", "upload-button")
-
-        <h1 id="main-heading" class="form-title heading-xlarge">@Messages("page.fileUpload.heading")</h1>
-
-        <div class="form-group">
-            <p id="file-upload-desc">@Messages("page.fileUpload.desc")</p>
-        </div>
-
-        <div class="form-group">
-            <p id="file-upload-restriction">@Messages("page.fileUpload.restriction")</p>
-        </div>
-
-        <div class="form-group">
-            <details>
-                <summary><span id="what-to-upload" class="summary">@Messages("page.fileUpload.whattoupload")</span></summary>
-                <div class="panel panel-indent panel-border-narrow">
-                    <div class="form-group"><p id="file-limit-amount">@Messages("page.fileUpload.limit.amount")</p></div>
-                    <div class="form-group"><p id="file-limit-type">@Messages("page.fileUpload.limit.type")</p></div>
-                    <div class="form-group"><p id="file-options-heading">@Messages("page.fileUpload.options.heading")</p>
-                        <ul class="list list-bullet">
-                            <li id="file-options-save">@Messages("page.fileUpload.options.save")</li>
-                            <li id="file-options-print">@Messages("page.fileUpload.options.print")</li>
-                            <li id="file-options-export">@Messages("page.fileUpload.options.export")</li>
-                        </ul>
-                    </div>
-                    <div class="form-group"><p id="file-limit-size">@Messages("page.fileUpload.limit.size")</p></div>
-                </div>
-            </details>
-        </div>
-
-        @if(files.size > 0){
-            <div class="form-group">
-                <table id="files-table">
-                    <thead>
-                    <tr>
-                        <td id="table-heading"><h2 class="heading-small">@Messages("page.fileUpload.table.heading")</h2></td>
-                        <td></td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        @for((file, index) <- files.zipWithIndex) {
-                            <tr>
-                                <td id="file-@{index}">@file.name</td>
-                                <td id="remove-@{index}"><a href="@routes.FileDeleteController.show(file.id)">@Messages("page.fileUpload.remove")</a></td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-
-        @if(files.size < 5){
-            <div class="form-group">
-                <input type="hidden" id="envelope-id" name="envelope-id" value="@envelopeID">
-            </div>
-
-            <div id="javascript-disabled" class="form-group">
-                @form(action = routes.FileUploadController.upload(), 'enctype -> "multipart/form-data") {
-                    @NoJavascriptUploadForm(files,envelopeID)
-                }
-            </div>
-
-            <div id="javascript-enabled" class="form-group" style = "display:none">
-                @form(action = routes.FileUploadController.upload(), 'enctype -> "multipart/form-data") {
-                    @JavascriptUploadForm(files, envelopeID)
-                }
-            </div>
-
-            @if(files.size > 0){
-            @form(action = routes.FileUploadController.submit()) {
-                <button class="button--link-style removeLink" type="submit" id="continue-link"> @Messages("page.fileUpload.continue")</button>
-            }
-        }
-        } else {
-            <div class="form-group">
-                <p class="indent" id="file-limit-reached">@Messages("page.fileUpload.fileLimitReached")</p>
-            </div>
-
-            @form(action = routes.FileUploadController.submit()) {
-                <button class="button" type="submit" id="continue-link"> @Messages("page.fileUpload.continue")</button>
-            }
-        }
-
+        <p id="file-upload-desc">@Messages("page.fileUpload.desc")</p>
     </div>
+
+    <div class="form-group">
+        <p id="file-upload-restriction">@Messages("page.fileUpload.restriction")</p>
+    </div>
+
+    <div class="form-group">
+        <details>
+            <summary><span id="what-to-upload" class="summary">@Messages("page.fileUpload.whattoupload")</span></summary>
+            <div class="panel panel-indent panel-border-narrow">
+                <div class="form-group"><p id="file-limit-amount">@Messages("page.fileUpload.limit.amount")</p></div>
+                <div class="form-group"><p id="file-limit-type">@Messages("page.fileUpload.limit.type")</p></div>
+                <div class="form-group"><p id="file-options-heading">@Messages("page.fileUpload.options.heading")</p>
+                    <ul class="list list-bullet">
+                        <li id="file-options-save">@Messages("page.fileUpload.options.save")</li>
+                        <li id="file-options-print">@Messages("page.fileUpload.options.print")</li>
+                        <li id="file-options-export">@Messages("page.fileUpload.options.export")</li>
+                    </ul>
+                </div>
+                <div class="form-group"><p id="file-limit-size">@Messages("page.fileUpload.limit.size")</p></div>
+            </div>
+        </details>
+    </div>
+
+    @if(files.size > 0){
+    <div class="form-group">
+        <table id="files-table">
+            <thead>
+            <tr>
+                <td id="table-heading"><h2 class="heading-small">@Messages("page.fileUpload.table.heading")</h2></td>
+                <td></td>
+            </tr>
+            </thead>
+            <tbody>
+            @for((file, index) <- files.zipWithIndex) {
+            <tr>
+                <td id="file-@{index}">@file.name</td>
+                <td id="remove-@{index}"><a href="@routes.FileDeleteController.show(file.id)">@Messages("page.fileUpload.remove")</a></td>
+            </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    }
+
+    @if(files.size < 5){
+    <div id="javascript-disabled" class="form-group">
+        @form(action = routes.FileUploadController.upload(), 'enctype -> "multipart/form-data") {
+        @NoJavascriptUploadForm(files,envelopeID)
+        }
+    </div>
+
+    <div id="javascript-enabled" class="form-group" style = "display:none">
+        @form(action = routes.FileUploadController.upload(), 'enctype -> "multipart/form-data") {
+        @JavascriptUploadForm(files, envelopeID)
+        }
+    </div>
+
+    @if(files.size > 0){
+    @form(action = routes.FileUploadController.submit()) {
+    <button class="button--link-style removeLink" type="submit" id="continue-link"> @Messages("page.fileUpload.continue")</button>
+    }
+    }
+    } else {
+    <div class="form-group">
+        <p class="indent" id="file-limit-reached">@Messages("page.fileUpload.fileLimitReached")</p>
+    </div>
+
+    @form(action = routes.FileUploadController.submit()) {
+    <button class="button" type="submit" id="continue-link"> @Messages("page.fileUpload.continue")</button>
+    }
+    }
+
+</div>
 }

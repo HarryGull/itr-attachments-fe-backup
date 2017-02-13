@@ -2,7 +2,10 @@
 @(files: Seq[EnvelopeFile], envelopeID: String)(implicit request: Request[_], messages: Messages)
 
 <div class="form-group">
-    <label for="file-input-nojs" id="file-input-nojs-label" hidden>@Messages("page.fileUpload.heading")</label>
+    <input type="hidden" id="envelope-id" name="envelope-id" value="@envelopeID">
+</div>
+
+<div class="form-group">
     <input id="file-input-nojs" type="file" name="supporting-docs" accept="application/pdf">
 </div>
 
