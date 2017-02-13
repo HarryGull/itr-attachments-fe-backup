@@ -17,11 +17,12 @@
 package controllers
 
 import akka.util.ByteString
-import config.FrontendGlobal.internalServerErrorTemplate
+import config.FrontendGlobal.{badRequestTemplate, internalServerErrorTemplate}
 import auth.AuthorisedAndEnrolledForTAVC
 import common.KeystoreKeys
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.{EnrolmentConnector, KeystoreConnector}
+import play.Logger
 import play.api.data.FormError
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MultipartFormData, Result}
@@ -73,8 +74,15 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
         savedUrl <- keyStoreConnector.fetchAndGetFormData[String](KeystoreKeys.continueUrl)
         savedBackUrl <- keyStoreConnector.fetchAndGetFormData[String](KeystoreKeys.backUrl)
       } yield (envelopeID, files, savedUrl, savedBackUrl) match {
-        case (_, _, None, _) if continueUrl.fold("")(_.toString).length == 0 => BadRequest("Required Continue Url not passsed")
-        case (_, _, _, None) if backUrl.fold("")(_.toString).length == 0 => BadRequest("Required back Url not passsed")
+        case (_, _, None, _) if continueUrl.fold("")(_.toString).length == 0 => {
+          Logger.warn(s"[FileUploadController][show] - Required Continue Url not passed")
+          BadRequest(badRequestTemplate)
+        }
+        case (_, _, _, None) if backUrl.fold("")(_.toString).length == 0 => {
+          //InternalServerError("Required back Url not passsed")
+          Logger.warn(s"[FileUploadController][show] - Required back Url not passed")
+          BadRequest(badRequestTemplate)
+        }
         case (_, _, _, _) if envelopeID.nonEmpty => {
           Ok(FileUpload(files, envelopeID, if (urlBack.length > 0) urlBack else savedBackUrl.getOrElse("")))
         }
